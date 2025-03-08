@@ -305,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     child: Text(
-                      "Play ${userGames.isNotEmpty ? userGames[selectedGameIndex]['name'] : 'Game'}",
+                      "PLAY ${userGames.isNotEmpty ? userGames[selectedGameIndex]['name'].toUpperCase() : 'GAME'}",
                       style: GoogleFonts.montserrat(
                         color: AppColors.blueAccentColor,
                         fontWeight: FontWeight.bold,

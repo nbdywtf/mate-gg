@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:mate_gg/services/api_service.dart';
 import 'package:mate_gg/theme/colors.dart';
 
@@ -179,7 +180,7 @@ class _SessionViewScreenState extends State<SessionViewScreen> {
                         ],
                       ),
                       Text(
-                        "on ${sessionData!['session_datetime']?? "Unknown date"}",
+                        _formatSessionDate(sessionData!['session_datetime']),
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -277,20 +278,22 @@ class _SessionViewScreenState extends State<SessionViewScreen> {
               const SizedBox(height: 10),
 
               // 🔹 Freunde einladen Button
-              ElevatedButton(
-                onPressed: _inviteFriends,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accentColor,
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _inviteFriends,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.accentColor,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                ),
-                child: Text(
-                  "INVITE YOUR FRIENDS TO MATE.GG",
-                  style: GoogleFonts.montserrat(
-                    color: AppColors.blueAccentColor,
-                    fontWeight: FontWeight.bold,
+                  child: Text(
+                    "INVITE YOUR FRIENDS TO MATE.GG",
+                    style: GoogleFonts.montserrat(
+                      color: AppColors.blueAccentColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -301,3 +304,18 @@ class _SessionViewScreenState extends State<SessionViewScreen> {
     );
   }
 }
+
+// 📌 Hilfsfunktion für Datum
+String _formatSessionDate(String? datetime) {
+  if (datetime == null || datetime.isEmpty) return "Unknown date";
+
+  try {
+    DateTime parsedDate = DateTime.parse(datetime);
+    return DateFormat("EEE, d MMM yyyy • HH:mm").format(parsedDate);
+    // Beispiel: "Wed, 23 Apr 2025 • 18:00"
+  } catch (e) {
+    print("⚠ Fehler bei der Datumsumwandlung: $e");
+    return "Invalid date";
+  }
+}
+

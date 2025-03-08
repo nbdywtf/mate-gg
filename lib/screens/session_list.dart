@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:mate_gg/services/api_service.dart';
 import 'package:mate_gg/theme/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,56 +79,81 @@ class _SessionListScreenState extends State<SessionListScreen> {
     bool isJoined = (session['is_joined'] ?? false) as bool;
     bool isLive = (session['is_live'] ?? false) as bool;
     String liveTime = session['live_time'] ?? "unknown";
-    String sessionTime = session['session_time'] ?? "unknown";
-    print("🎮 Session: ${session['name']} | Game: ${session['game_name']} | Owner: ${session['owner_nickname']}  | Sessiontime: ${session['sessionTime']}");
+    DateTime? sessionDateTime;
+    if (session['session_datetime'] != null) {
+      try {
+        sessionDateTime = DateTime.parse(session['session_datetime']); // ✅ Umwandeln
+      } catch (e) {
+        print("⚠ Fehler bei der Datumsumwandlung: $e");
+      }
+    }
 
+    // 🔹 Datum in ein lesbares Format umwandeln
+    String formattedSessionTime = sessionDateTime != null
+        ? DateFormat("EEE, d MMM HH:mm").format(sessionDateTime) // Beispiel: "Mon, 14 Apr 19:00"
+        : "unknown";
 
-    return Card(
-      color: AppColors.purpleAccentColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.accentColor, // 🔹 Border in deiner Accent-Farbe
-              width: 2, // 🔹 Dicke der Border
+    print("🎮 Session: ${session['name']} | Game: ${session['game_name']} | Owner: ${session['owner_nickname']} | Sessiontime: $formattedSessionTime");
+
+    return GestureDetector(
+      onTap: () {
+        int sessionId = int.tryParse(session['id'].toString()) ?? 0;
+
+        if (sessionId > 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: sessionId)),
+          );
+        } else {
+          print("⚠ Fehler: Ungültige Session-ID");
+        }
+      },
+      child: Card(
+        color: AppColors.purpleAccentColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: ListTile(
+          leading: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.accentColor,
+                width: 2,
+              ),
+            ),
+            child: CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.purpleAccentColor,
+              child: Image.asset('assets/mate-logo.png', width: 20),
             ),
           ),
-          child: CircleAvatar(
-            radius: 22, // 🔹 Größe des Avatars
-            backgroundColor: AppColors.purpleAccentColor,
-            child: Image.asset('assets/mate-logo.png', width: 20),
+          title: Text(
+            isOwnSession ? "Your Session" : "${session['owner_nickname']}'s Session",
+            style: GoogleFonts.montserrat(color: Colors.white),
           ),
-        ),
-        title: Text(
-          isOwnSession ? "Your Session" : "${session['owner_nickname']}'s Session",
-          style: GoogleFonts.montserrat(color: Colors.white),
-        ),
-        subtitle: Text(
-          "${session['game_name']} ${isLive ? "live for $liveTime" : "at $sessionTime"}",
-          style: GoogleFonts.montserrat(color: Colors.white70),
-        ),
-        trailing: isJoined
-            ? GestureDetector(
-          onTap: () {
-            // ✅ Sicherstellen, dass die ID als int übergeben wird
-            int sessionId = int.tryParse(session['id'].toString()) ?? 0;
+          subtitle: Text(
+            "${session['game_name']} ${isLive ? "live for $liveTime" : "at $formattedSessionTime"}",
+            style: GoogleFonts.montserrat(color: Colors.white70),
+          ),
+          trailing: isJoined
+              ? GestureDetector(
+            onTap: () {
+              int sessionId = int.tryParse(session['id'].toString()) ?? 0;
 
-            if (sessionId > 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: sessionId)),
-              );
-            } else {
-              print("⚠ Fehler: Ungültige Session-ID");
-            }
-          },
-          child: Icon(Icons.check_circle, color: AppColors.accentColor, size: 30),
-        )
-            : IconButton(
-          icon: Icon(Icons.add_circle_outline, color: AppColors.accentColor, size: 30),
-          onPressed: () => _joinSession(session['id']),
+              if (sessionId > 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: sessionId)),
+                );
+              } else {
+                print("⚠ Fehler: Ungültige Session-ID");
+              }
+            },
+            child: Icon(Icons.check_circle, color: AppColors.accentColor, size: 30),
+          )
+              : IconButton(
+            icon: Icon(Icons.add_circle_outline, color: AppColors.accentColor, size: 30),
+            onPressed: () => _joinSession(session['id']),
+          ),
         ),
       ),
     );

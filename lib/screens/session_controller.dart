@@ -109,6 +109,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 30),
                 ],
               ),
 
@@ -116,9 +117,9 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
 
               // 🔹 Session Name Eingabe
               _buildTextField("Session Name", _sessionNameController),
-
+              const SizedBox(height: 30),
               // 🔹 Datumsauswahl
-              Text("The Session starts", style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white)),
+              Text("The Session starts on", style: GoogleFonts.montserrat(fontSize: 16, color: Colors.white)),
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () async {
@@ -156,7 +157,6 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
               // 🔹 Dauer Slider
               Text("The Session will last for ${sessionDuration.toInt()} hours", style: TextStyle(color: Colors.white)),
               Slider(
@@ -171,10 +171,10 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   });
                 },
               ),
-
+              const SizedBox(height: 30),
               // 🔹 Beschreibung
               _buildTextField("Some warm words to your Mates?", _descriptionController),
-
+              const SizedBox(height: 30),
               // 🔹 Treffpunkt
               Text("Where do you meet?", style: TextStyle(color: Colors.white)),
               Wrap(
@@ -191,6 +191,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 30),
               _buildTextField("Type further info here (optional)", _locationInfoController),
 
               Spacer(),
@@ -203,7 +204,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
-                child: Text("START SESSION!", style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                child: Text("START SESSION!", style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.blueAccentColor)),
               ),
               const SizedBox(height: 30),
             ],

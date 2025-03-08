@@ -278,7 +278,7 @@ class _GameCollectionScreenState extends State<GameCollectionScreen> {
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
-                child: Text("SAVE", style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: Text("SAVE", style: GoogleFonts.montserrat(color: AppColors.blueAccentColor, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

@@ -21,14 +21,35 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
     _loadUserProfile();
   }
 
-  // 🔹 Nutzerdaten laden
   Future<void> _loadUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? nickname = prefs.getString('nickname');
+    String? email = prefs.getString('email');
+
+    if (nickname == null || email == null) {
+      try {
+        final profileData = await ApiService.getUserProfile(); // 🔥 API Call
+
+        await prefs.setString('nickname', profileData['nickname']);
+        await prefs.setString('email', profileData['email']);
+
+        nickname = profileData['nickname'];
+        email = profileData['email'];
+      } catch (e) {
+        print("❌ Fehler beim Laden des Profils: $e");
+      }
+    }
+
     setState(() {
-      _nameController.text = prefs.getString('nickname') ?? '';
-      _emailController.text = prefs.getString('email') ?? '';
+      _nameController.text = nickname ?? '';
+      _emailController.text = email ?? '';
     });
+
+    print("✅ Profildaten geladen: Nickname=$nickname, Email=$email");
   }
+
+
 
   // 🔹 Profil aktualisieren
   Future<void> _saveProfile() async {
@@ -146,7 +167,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
                 ),
                 child: isLoading
                     ? CircularProgressIndicator(color: Colors.white)
-                    : Text("SAVE CHANGES", style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                    : Text("SAVE CHANGES", style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.blueAccentColor)),
               ),
               const SizedBox(height: 30),
             ],

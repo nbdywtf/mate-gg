@@ -433,14 +433,14 @@ class ApiService {
       'name': name,
       'owner_id': ownerId,
       'game_id': gameId,
-      'session_datetime': sessionDatetime.toIso8601String(), // ✅ ISO-Format für Datum
+      'session_datetime': sessionDatetime.toIso8601String(),
       'duration': duration,
       'location': location,
       'location_info': locationInfo,
-      'description': description,
+      'description': description, // ✅ Beschreibung mitsenden
     });
 
-    print("📡 API Request: $body"); // Debugging
+    print("📡 API Request: $body"); // 🔍 Debugging
 
     final response = await http.post(
       url,
@@ -458,6 +458,7 @@ class ApiService {
       throw Exception('Fehler beim Erstellen der Session: ${response.body}');
     }
   }
+
 
   static Future<Map<String, dynamic>> getSessionDetails(int sessionId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -546,6 +547,24 @@ class ApiService {
 
     if (response.statusCode != 200) {
       throw Exception('Fehler beim Beitreten der Session: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id'); // 🔹 Holen der gespeicherten User-ID
+
+    if (userId == null) {
+      throw Exception("Kein Benutzer eingeloggt.");
+    }
+
+    final url = Uri.parse('$baseUrl/players/profile?player_id=$userId');
+    final response = await http.get(url, headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Fehler beim Abrufen des Profils: ${response.body}');
     }
   }
 
