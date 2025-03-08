@@ -82,24 +82,34 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
           child: Column(
             children: [
               const SizedBox(height: 35),
-              RichText(
-                textAlign: TextAlign.center,
-                softWrap: true,
-                text: TextSpan(
-                  style: GoogleFonts.montserrat(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textWhiteColor,
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  children: [
-                    TextSpan(text: "Tell your Mates about your "),
-                    TextSpan(
-                      text: "${widget.gameName}",
-                      style: TextStyle(color: AppColors.accentColor),
+                  Expanded(
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      text: TextSpan(
+                        style: GoogleFonts.montserrat(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textWhiteColor,
+                        ),
+                        children: [
+                          TextSpan(text: "Tell your Mates about your "),
+                          TextSpan(
+                            text: "${widget.gameName}",
+                            style: TextStyle(color: AppColors.accentColor),
+                          ),
+                          TextSpan(text: " Session!"),
+                        ],
+                      ),
                     ),
-                    TextSpan(text: " Session!"),
-                  ],
-                ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 50),

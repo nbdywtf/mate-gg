@@ -82,60 +82,52 @@ class _SessionListScreenState extends State<SessionListScreen> {
     print("🎮 Session: ${session['name']} | Game: ${session['game_name']} | Owner: ${session['owner_nickname']}  | Sessiontime: ${session['sessionTime']}");
 
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: session['id'])),
-        );
-      },
-      child: Card(
-        color: AppColors.purpleAccentColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          leading: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.accentColor, // 🔹 Border in deiner Accent-Farbe
-                width: 2, // 🔹 Dicke der Border
-              ),
-            ),
-            child: CircleAvatar(
-              radius: 22, // 🔹 Größe des Avatars
-              backgroundColor: AppColors.purpleAccentColor,
-              child: Image.asset('assets/mate-logo.png', width: 20),
+    return Card(
+      color: AppColors.purpleAccentColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.accentColor, // 🔹 Border in deiner Accent-Farbe
+              width: 2, // 🔹 Dicke der Border
             ),
           ),
-          title: Text(
-            isOwnSession ? "Your Session" : "${session['owner_nickname']}'s Session",
-            style: GoogleFonts.montserrat(color: Colors.white),
+          child: CircleAvatar(
+            radius: 22, // 🔹 Größe des Avatars
+            backgroundColor: AppColors.purpleAccentColor,
+            child: Image.asset('assets/mate-logo.png', width: 20),
           ),
-          subtitle: Text(
-            "${session['game_name']} ${isLive ? "live for $liveTime" : "at $sessionTime"}",
-            style: GoogleFonts.montserrat(color: Colors.white70),
-          ),
-          trailing: isJoined
-              ? GestureDetector(
-            onTap: () {
-              // ✅ Sicherstellen, dass die ID als int übergeben wird
-              int sessionId = int.tryParse(session['id'].toString()) ?? 0;
+        ),
+        title: Text(
+          isOwnSession ? "Your Session" : "${session['owner_nickname']}'s Session",
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+        subtitle: Text(
+          "${session['game_name']} ${isLive ? "live for $liveTime" : "at $sessionTime"}",
+          style: GoogleFonts.montserrat(color: Colors.white70),
+        ),
+        trailing: isJoined
+            ? GestureDetector(
+          onTap: () {
+            // ✅ Sicherstellen, dass die ID als int übergeben wird
+            int sessionId = int.tryParse(session['id'].toString()) ?? 0;
 
-              if (sessionId > 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: sessionId)),
-                );
-              } else {
-                print("⚠ Fehler: Ungültige Session-ID");
-              }
-            },
-            child: Icon(Icons.check_circle, color: AppColors.accentColor, size: 30),
-          )
-              : IconButton(
-            icon: Icon(Icons.add_circle_outline, color: AppColors.accentColor, size: 30),
-            onPressed: () => _joinSession(session['id']),
-          ),
+            if (sessionId > 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SessionViewScreen(sessionId: sessionId)),
+              );
+            } else {
+              print("⚠ Fehler: Ungültige Session-ID");
+            }
+          },
+          child: Icon(Icons.check_circle, color: AppColors.accentColor, size: 30),
+        )
+            : IconButton(
+          icon: Icon(Icons.add_circle_outline, color: AppColors.accentColor, size: 30),
+          onPressed: () => _joinSession(session['id']),
         ),
       ),
     );
